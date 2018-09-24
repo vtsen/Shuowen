@@ -7,9 +7,11 @@ Created on Fri Sep 21 22:25:59 2018
 
 import os
 import os.path as path
+import argparse
 
 from zi import Zi
 from chain import SoundDerivationChain as SDC
+from data_fetch import SimpleDataScrapper, FullInfoDataScrapper
 
 
 if __name__ == "__main__":
@@ -19,7 +21,32 @@ if __name__ == "__main__":
     '''    
     root_path = path.dirname(path.dirname(path.realpath(__file__)))
     data_path = path.join(root_path, "data")
-    zi_list = []  
+    zi_list = []
+    
+    # Parse arguments
+    parser = argparse.ArgumentParser(description="Shuowen structure project")
+    parser.add_argument("--need_refetch", dest="need_refetch", type=bool,
+                        default=True,
+                        help="True if need to refetch data from website")
+    parser.add_argument("--scrapper_type", dest="scrapper_type", type=str,
+                        default="Simple",
+                        help="Type of scrapper")    
+    args = parser.parse_args()
+    
+    print("\nParameters:")
+    for attr, value in args.__dict__.items():
+        print("\t{}={}".format(attr.upper(), value))
+    
+    # Refetch data from website if required
+    if args.need_refetch:
+        if args.scrapper_type.lower() == "simple":
+            scrapper = SimpleDataScrapper()
+        elif args.scrapper_type.lower() == "full":
+            scrapper = FullInfoDataScrapper()
+        else:
+            print("Only 'simple' and 'full' supported. Using simple in default.")
+            scrapper = SimpleDataScrapper()
+        scrapper.get_data()
     
     # Read from file
     for filename in os.listdir(data_path):

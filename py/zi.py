@@ -39,9 +39,8 @@ class Zi(object):
         
     def guess_sheng(self):
         '''
-        Guess and return the shengpang of zi
+        Guess and return the shengpang of a character
         '''
-        THRESHOLD = 0.5
         if '聲' not in self.meaning:
             self.sheng = (0, ' ', 'Not Xingsheng')
         else:
@@ -53,10 +52,11 @@ class Zi(object):
                                                                sheng_idx[i-1],
                                                                self.meaning))
             possibilities.sort(key=lambda s: s[0], reverse=True)
-            if 0 < possibilities[0][0] < THRESHOLD:
+            if 0 < possibilities[0][0] < Zi.SHENG_THRESHOLD:
                 print("Tricky case for", self.zi, 
                       possibilities[0][2], self.meaning)
-            elif len(possibilities) >= 2 and possibilities[1][0] >= THRESHOLD:
+            elif len(possibilities) >= 2 \
+            and possibilities[1][0] >= Zi.SHENG_THRESHOLD:
                 print("Tricky case for", self.zi,
                       "Too many Sheng!", self.meaning, possibilities)
             self.sheng = possibilities[0]
