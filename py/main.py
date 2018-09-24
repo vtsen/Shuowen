@@ -14,6 +14,18 @@ from chain import SoundDerivationChain as SDC
 from data_fetch import SimpleDataScrapper, FullInfoDataScrapper
 
 
+def str2bool(v):
+    '''
+    Facilitate reading boolean arguments represented as string
+    '''
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+        
+        
 if __name__ == "__main__":
     '''
     A simple preliminary research on sound derivation of Chinese characters
@@ -25,7 +37,7 @@ if __name__ == "__main__":
     
     # Parse arguments
     parser = argparse.ArgumentParser(description="Shuowen structure project")
-    parser.add_argument("--need_refetch", dest="need_refetch", type=bool,
+    parser.add_argument("--need_refetch", dest="need_refetch", type=str2bool,
                         default=True,
                         help="True if need to refetch data from website")
     parser.add_argument("--scrapper_type", dest="scrapper_type", type=str,
@@ -46,6 +58,7 @@ if __name__ == "__main__":
         else:
             print("Only 'simple' and 'full' supported. Using simple in default.")
             scrapper = SimpleDataScrapper()
+        scrapper.set_data_path(data_path)
         scrapper.get_data()
     
     # Read from file
@@ -55,15 +68,16 @@ if __name__ == "__main__":
         z.guess_sheng()
         zi_list.append(z)
     zi_list.append(Zi(None))
-    print(len(zi_list), "zi read from file.")
+    print('\n\n', len(zi_list), "zi read from file.\n----\n")
 
     # Build derivation chains
     shuowen_sdc = SDC()
     shuowen_sdc.build_chains_from_zi_list(zi_list)
+    print('\n\n', len(shuowen_sdc.chains), "chains found.\n----\n")
         
     # Print longest chains
-    shuowen_sdc.print_top_chains(10, verbose=True)
-    shuowen_sdc.print_top_chains(50)
+    shuowen_sdc.print_top_chains(3, verbose=True)
+    shuowen_sdc.print_top_chains(10)
     shuowen_sdc.print_chain(1000, verbose=True)
     shuowen_sdc.print_chain(3619, verbose=True)
 #    shuowen_sdc.print_chain(10000, verbose=True)

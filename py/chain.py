@@ -59,7 +59,7 @@ class SoundDerivationChain(Chain):
         zi_dict = dict()
         for z in zi_list:
             if z.zi in zi_dict.keys():
-                print("Duplicates! ", z, zi_dict[z.zi])
+                print("Duplicates!\n", z, '\n', zi_dict[z.zi])
             zi_dict[z.zi] = z
         print(len(zi_dict))
     

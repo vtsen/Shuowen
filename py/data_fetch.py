@@ -20,12 +20,15 @@ class DataScrapper(object):
     def __init__(self,
                  url_prefix="http://www.shuowen.org/view/",
                  indices=list(range(1, 9834))):
-        self.root_path = path.dirname(path.dirname(path.realpath(__file__)))
-        self.root_data_path = path.join(self.root_path, "data")
+        root_path = path.dirname(path.dirname(path.realpath(__file__)))
+        self.data_path = path.join(root_path, "data")
         self.url_prefix = url_prefix
         self.minimum_wait_time_sec = 1.0
         self.max_extra_wait_time_sec = 1.0
         self.indices = indices     # indices from source website
+        
+    def set_data_path(self, data_path):
+        self.data_path = data_path
         
     def set_wait_time(self, minimum_wait_time_sec, max_extra_wait_time_sec):
         '''
@@ -39,15 +42,21 @@ class DataScrapper(object):
         '''
         Fetch data from url specified by indices
         '''
+        MAX_SUPPRESS = 1000
         if indices is None:
             indices = self.indices
+        omitted = []
         for i in rd.permutation(indices):
             try:
-                data_path = path.join(self.root_data_path, str(i))
+                data_path = path.join(self.data_path, str(i))
                 if path.exists(data_path):
-                    print("Omitting", i)
+                    omitted.append(i)
+                    if len(omitted) >= MAX_SUPPRESS:
+                        print("Omitted", len(omitted), "existing entries...")
+                        omitted = []
                     continue
-                print(i)
+                if len(omitted) > 0:
+                    print("Omitted", len(omitted), "existing entries...")
                 os.makedirs(data_path)
                 html = BeautifulSoup(simple_get(self.url_prefix + str(i)),
                                          "html.parser")

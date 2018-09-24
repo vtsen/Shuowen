@@ -14,6 +14,7 @@ class Zi(object):
     Data structure for a Chinese character, focusing on sound derivation
     '''
     SHENG_THRESHOLD = 0.45
+    NON_SHENG_THRESHOLD = 0.25
     
     def __init__(self, filename):
         if filename is None:        # Empty constructor
@@ -52,7 +53,7 @@ class Zi(object):
                                                                sheng_idx[i-1],
                                                                self.meaning))
             possibilities.sort(key=lambda s: s[0], reverse=True)
-            if 0 < possibilities[0][0] < Zi.SHENG_THRESHOLD:
+            if Zi.NON_SHENG_THRESHOLD < possibilities[0][0] < Zi.SHENG_THRESHOLD:
                 print("Tricky case for", self.zi, 
                       possibilities[0][2], self.meaning)
             elif len(possibilities) >= 2 \
