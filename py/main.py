@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # Parse arguments
     parser = argparse.ArgumentParser(description="Shuowen structure project")
     parser.add_argument("--need_refetch", dest="need_refetch", type=str2bool,
-                        default=True,
+                        default=False,
                         help="True if need to refetch data from website")
     parser.add_argument("--scrapper_type", dest="scrapper_type", type=str,
                         default="Simple",
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         z.guess_sheng()
         zi_list.append(z)
     zi_list.append(Zi(None))
-    print('\n\n', len(zi_list), "zi read from file.\n----\n")
+    print('\n\n', len(zi_list), "entries read from file.\n----\n")
 
     # Build derivation chains
     shuowen_sdc = SDC()
@@ -84,5 +84,9 @@ if __name__ == "__main__":
 
     # Estimate Xingsheng ratio
     num_xingsheng = sum([1 for z in zi_list if z.sheng[0] > Zi.SHENG_THRESHOLD])
-    print(num_xingsheng, num_xingsheng / float(len(zi_list)))
+    print("{0} out of {1} entries are Xingsheng, {2:.2%}".format(num_xingsheng,
+          len(zi_list),
+          num_xingsheng / float(len(zi_list))))
+    
+    #TODO: use networkx to plot DAG
     
