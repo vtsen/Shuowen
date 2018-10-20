@@ -5,9 +5,23 @@ Created on Mon Sep 17 22:46:16 2018
 @author: Zhen
 """
 
+import argparse
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
+
+
+def str2bool(v):
+    '''
+    Facilitate reading boolean arguments represented as string
+    '''
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 
 def simple_get(url):
     """
